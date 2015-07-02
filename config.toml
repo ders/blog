@@ -1,0 +1,9 @@
+baseurl = "https://ders.github.io/"
+languageCode = "en-us"
+theme = "purehugo"
+title = "awm's blog"
+pygmentsuseclasses = true
+canonifyurls = true
+
+[params]
+  description = "What did I do today?"
