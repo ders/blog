@@ -1,8 +1,8 @@
-baseurl = "https://ders.github.io/"
+publishdir = "../ders.github.io"
+baseurl = "https://ders.github.io"
 languageCode = "en-us"
 theme = "purehugo"
 title = "awm's blog"
-pygmentsuseclasses = true
 canonifyurls = true
 
 [params]
