@@ -10,44 +10,44 @@ Being who I am, I noticed a couple of inconsistencies between the tutorial video
 
 In the level 5 video at 2:10, the following match example is given:
 
-{{< highlight ruby >}}
+```
 match 'new_tweet' => "Tweets#new"
-{{< /highlight >}}
+```
 
 Note the uppercase T on Tweets.  This T is uppercase throughout the video.
 
 However, when I tried to do the second exercise for this level, the following answer was rejected:
 
-{{< highlight ruby >}}
+```
 match 'undead' => "Zombies#undead"
-{{< /highlight >}}
+```
 
 The hints told me to do this:
 
-{{< highlight ruby >}}
+```
 match 'undead' => "zombies#undead"
-{{< /highlight >}}
+```
 
 with a lower case z, which was accepted.  Now I'm confused.  Do we need a capital letter here or not?
 
 In the same video at 3:30, the following match example is given:
 
-{{< highlight ruby >}}
+```
 match 'all' => redirect('/tweets')
-{{< /highlight >}}
+```
 
 Note that there is no leading slash on 'all'; this format is consistent throughout the video.
 
 However, when I tried to do the third exercise, the following answer was rejected:
 
-{{< highlight ruby >}}
+```
 match 'undead' => redirect('/zombies')
-{{< /highlight >}}
+```
 
 This time the hints told me to do this:
 
-{{< highlight ruby >}}
+```
 match '/undead' => redirect('/zombies')
-{{< /highlight >}}
+```
 
 Again, I'm confused. Do we need (or even want) a leading slash here?

@@ -16,16 +16,16 @@ Also, I'd like to avoid `#dirty_attributes` as it's not part of the public API.
 
 There is a possible workaround, suggested by some.  Override the setter for the attribute and save the old value for later use.
 
-{{< highlight ruby >}}
+```
 def thing=(newthing)
   @oldthing ||= @thing
   @thing = newthing
 end
-{{< /highlight >}}
+```
 
 I'm not going to link to the people who suggested this, though, because it's a terrible suggestion.  Since we've overridden Data Mapper's setter for attribute `thing`, Data Mapper no longer knows that we've changed its value.
 
-{{< highlight ruby >}}
+```
 1.9.3-p392 :001 > record = Record.get(1)
  => ...
 1.9.3-p392 :002 > record.thing
@@ -34,28 +34,28 @@ I'm not going to link to the people who suggested this, though, because it's a t
  => "coffeemaker"
 1.9.3-p392 :004 > record.attribute_dirty?(:thing)
  => false
-{{< /highlight >}}
+```
 
 Imagine the insidious bugs that could creep in here.
 
-{{< highlight ruby >}}
+```
 1.9.3-p392 :005 > record.save
  => true
 1.9.3-p392 :006 > record = Record.get(1)
  => ...
 1.9.3-p392 :003 > record.thing
  => "teamaker"
-{{< /highlight >}}
+```
 
 Simply put, our changes are silently ignored because we've stupidly disabled what is arguably Data Mapper's most important function.
 
 Fortunately, there is a correct way to do this.  Instead of setting the attributes directly, we set them using Data Mapper's [`#attribute_set`](http://rubydoc.info/github/datamapper/dm-core/master/DataMapper/Resource#attribute_set-instance_method).
 
-{{< highlight ruby >}}
+```
 def thing=(newthing)
   @oldthing ||= @thing
   attribute_set(:thing, newthing)
 end
-{{< /highlight >}}
+```
 
 Method `#attribute_set` keeps track of the changes.  It's what `thing=` pointed to before we overrode it.

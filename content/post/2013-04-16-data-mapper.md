@@ -22,8 +22,8 @@ I have a model with an ordering field, which we'll call `position`.  I want to s
 
 In MySQL, I would write:
 
-{{< highlight sql >}}
+```
 SELECT * FROM `things` ORDER BY `position`=0, `position`, `id` DESC
-{{< /highlight >}}
+```
 
 Free donuts to the first person who can make a DataMapper version of this.

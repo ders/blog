@@ -292,7 +292,7 @@ func Xaction(db *sql.DB, f func(*Tx)) (err error) {
 This covers all of our boilerplate needs except for (1a) above.
 To accommodate (1a), we could extend `sql.Result` the same way we extended
 the others, but I haven't really needed it yet, so I'll leave it as an
-exercise for the reader,
+exercise for the reader.
 
 One final method that's there just to make everything neat and tidy is a `Fail`
 method on the transaction which can be used to return an arbitrary error.

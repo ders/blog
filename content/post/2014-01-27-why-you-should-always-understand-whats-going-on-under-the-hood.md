@@ -25,18 +25,18 @@ whether or not we actually changed anything.
 
 In SQL this would look like this:
 
-{{< highlight sql >}}
+```
 UPDATE "quarks" SET "seen" = 't', "whosaw" = 'ders' WHERE "id" = 42 AND "seen" = 'f'
-{{< /highlight >}}
+```
 
 Then I would get the number of affected rows to see if a change was made
 (i.e. whether or not the quark had already been seen).
 
 So let's try it with DataMapper:
 
-{{< highlight ruby >}}
+```
 Quark.all(:id => 42, :seen => false).update(:seen => true, :whosaw => 'ders')
-{{< /highlight >}}
+```
 
 Two problems here.
 The first problem is that the return value is always true, and we don't
@@ -49,10 +49,10 @@ The second problem is the dealbreaker.
 Datamapper insists on generating two separate queries for the single
 update statement:
 
-{{< highlight sql >}}
+```
 SELECT "id", "size", "name", "seen", "whosaw" FROM "quarks" WHERE ("id" = 42 AND "seen" = 'f') ORDER BY "id"
 UPDATE "quarks" SET "seen" = 't', "whosaw" = 'ders' WHERE "id" = 42
-{{< /highlight >}}
+```
 
 This obviously won't do, as it's not thread-safe.
 Two users running this code at the same time would both believe that they saw the quark first.
@@ -61,12 +61,12 @@ Two users running this code at the same time would both believe that they saw th
 
 The solution was to write the update query in SQL.
 
-{{< highlight ruby >}}
+```
 da = DataMapper.repository(:default).adapter
 r = da.execute("UPDATE quarks SET seen='t', whosaw='ders' WHERE id=42 AND seen='f'")
 if r.affected_rows > 0
    ... # we saw it first
-{{< /highlight >}}
+```
 
 Kind of defeats the purpose of having an ORM, but it gets the job done.
 And as it turns out, I'm
@@ -84,16 +84,16 @@ started returning 500s.
 
 It's easy enough to change the query to work with MySQL:
 
-{{< highlight ruby >}}
+```
 r = da.execute("UPDATE quarks SET seen=1, whosaw='ders' WHERE id=42 AND seen=0")
-{{< /highlight >}}
+```
 
 But then the unit tests fail.
 
 In the end, I wrote this bit of horrible code to keep the tests passing
 and the live server happy.
 
-{{< highlight ruby >}}
+```
 t, f = if da.options['scheme'] == 'sqlite'
   ["'t'", "'f'"] # sqlite
 else
@@ -103,7 +103,7 @@ end
   ...
 
 r = da.execute("UPDATE quarks SET seen=#{t}, whosaw='ders' WHERE id=42 AND seen=#{f}")
-{{< /highlight >}}
+```
 
 (There may be a way to extract `t` and `f` directly from the
 DataMapper internals, but I'm not that good yet.)

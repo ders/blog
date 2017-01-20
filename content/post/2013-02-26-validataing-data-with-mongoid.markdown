@@ -20,7 +20,7 @@ After a bit of hair-pulling, I discovered it's actually quite simple.
 
 Let's define a minimal class `Iqscore`.  (The name of the collection will be `iqscores`; this is a weird behavior of Mongoid whereby class names must be singular and Mongoid will pluralize them for you when naming the collection.)
 
-{{< highlight ruby >}}
+```
 require "mongoid"
 
 class Iqscore
@@ -34,38 +34,38 @@ class Iqscore
   validates :iq, :numericality => true
 
 end
-{{< /highlight >}}
+```
 
 Mongoid provides a `valid?` method on Iqscore objects.  Valid? tells us whether or not the criteria in the `validates` declarations are met.
 
-{{< highlight text >}}
+```
 1.9.3p385 :008 > x = Iqscore.new({kid: "George", iq: 70})
  => #<Iqscore _id: 512c72d5352420234d000003, kid: "George", iq: 70>
 1.9.3p385 :009 > x.valid?
  => true
-{{< /highlight >}}
+```
 
-{{< highlight text >}}
+```
 1.9.3p385 :010 > y = Iqscore.new({kid: "Bill", iq: "unknown"})
  => #<Iqscore _id: 512c736e352420234d000004, kid: "Bill", iq: 0>
 1.9.3p385 :011 > y.valid?
  => false
-{{< /highlight >}}
+```
 
 If it doesn't validate, we can see what's wrong by looking at the `errors` property.  In this case it tells us that `iq` is not a number (and it should be).  Note that the message "is not a number" is in an array, as it's possible for there to be multiple messages for a single field.
 
-{{< highlight text >}}
+```
 1.9.3p385 :012 > y.errors
  => #<ActiveModel::Errors:0x98a31cc @base=#<Iqscore _id: 512c736e352420234d000004, kid: "Bill", iq: 0>, @messages={:iq=>["is not a number"]}>
-{{< /highlight >}}
+```
 
 The `valid?` method is called automatically before any save operation (e.g. `save` or `create`), and if it returns false, then the save is not done.  Both `save` and `create` return true or false to indicate whether the save was done or not.
 
-{{< highlight text >}}
+```
 1.9.3p385 :013 > x.save
  => true
 1.9.3p385 :014 > y.save
  => false
-{{< /highlight >}}
+```
 
 At this point George is in our database, but Bill isn't.
